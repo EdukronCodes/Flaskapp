@@ -23,6 +23,6 @@ stages:
       inputs:
         command: build
         repository: $(imageName)
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        dockerfile: '$(Build.SourcesDirectory)/Flaskapp/Dockerfile'
         tags: |
           $(tag)
