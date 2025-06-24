@@ -1,7 +1,4 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
+# Docker Build Pipeline
 trigger:
 - main
 
@@ -10,20 +7,22 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  imageName: 'flaskapp'
 
 stages:
 - stage: Build
-  displayName: Build image
+  displayName: Build Docker Image
   jobs:
   - job: Build
-    displayName: Build
+    displayName: Build Image Job
     pool:
-      vmImage: ubuntu-latest
+      vmImage: 'ubuntu-latest'
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build Docker image
       inputs:
         command: build
-        dockerfile: '$(Build.SourcesDirectory)/Flaskapp/Dockerfile'
+        repository: $(imageName)
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: |
           $(tag)
