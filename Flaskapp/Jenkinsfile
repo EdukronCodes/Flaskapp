@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "flask-ubuntu-app"
+        CONTAINER_NAME = "flask-container"
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                echo 'Cloning repository...'
+                // You can use Git plugin or Jenkins job SCM config
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Stop Previous Container') {
+            steps {
+                echo 'Stopping existing container (if any)...'
+                sh '''
+                docker stop $CONTAINER_NAME || true
+                docker rm $CONTAINER_NAME || true
+                '''
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                echo 'Running Docker container...'
+                sh 'docker run -d -p 5000:5000 --name $CONTAINER_NAME $IMAGE_NAME'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment complete!'
+        }
+        failure {
+            echo '❌ Build or deploy failed.'
+        }
+    }
+}
